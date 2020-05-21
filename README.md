@@ -1,2 +1,16 @@
-# WordBookGenerator
-金山词霸2016生词本生成器 the new word book generator for PowerWord 2016
+# 金山词霸2016生词本生成器
+the new word book generator for PowerWord 2016
+
+使用方法:
+一 导入txt文件
+1. 支持从txt文件中导入生词
+2. 导入后显示在左侧的内容中,可以再次编辑
+3. 点击"开始"按钮即可导出为金山词霸的生词本格式
+4. 将导出的生词本导入到金山词霸生词本库中即可
+
+注意: txt文件为一行一个单词
+
+二 直接输入生词
+1. 直接在左侧编辑框內输入单词即可
+
+注意: 一行一个单词
