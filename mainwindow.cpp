@@ -5,6 +5,7 @@
 #include <QErrorMessage>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -41,7 +42,7 @@ void MainWindow::on_btnSelectFile_clicked()
     dialog.setWindowTitle("选择文件");
     dialog.setDefaultSuffix("txt");
     dialog.setNameFilter("txt(*.txt)");
-    dialog.setOption(QFileDialog::DontUseNativeDialog);
+//    dialog.setOption(QFileDialog::DontUseNativeDialog);
 
     if (dialog.exec() == QDialog::Accepted) {
         QStringList list = dialog.selectedFiles();
@@ -108,22 +109,37 @@ void MainWindow::on_btnStart_clicked()
                     QMessageBox::Ok);
     } else {
 
+#if defined (Q_OS_WIN32)
+        workThread = new WorkThread(ws, savePath);
+        connect(workThread, SIGNAL(genFinishSignal(bool)), this, SLOT(onGenFinish(bool)), Qt::QueuedConnection);
+#elif defined (Q_OS_LINUX)
         if (workThread == nullptr) {
             workThread = new WorkThread(ws, savePath);
             connect(workThread, SIGNAL(genFinishSignal(bool)), this, SLOT(onGenFinish(bool)), Qt::QueuedConnection);
         }
+#endif
         workThread->start();
     }
 }
 
 void MainWindow::onGenFinish(bool success) {
-    QMessageBox::information(
+    if (success) {
+        QMessageBox::information(
                 this,
                 QString("操作完成"),
                 QString("已生成生词本"),
                 QMessageBox::Ok);
 
-    workThread->wait();
+        workThread->wait();
+    } else {
+        QMessageBox::information(
+                this,
+                QString("操作失败"),
+                QString("生成生词本失败"),
+                QMessageBox::Ok);
+
+        workThread->wait();
+    }
 }
 
 WorkThread::WorkThread(QString ws, QString path) {
@@ -156,4 +172,18 @@ void WorkThread::run() {
 
     emit genFinishSignal(true);
 
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    switch( QMessageBox::information( this, tr("退出程序"), tr("确定要退出程序吗?"), tr("是"), tr("否"), nullptr, 1 ))
+       {
+         case 0:
+              event->accept();
+              break;
+         case 1:
+         default:
+             event->ignore();
+             break;
+       }
 }

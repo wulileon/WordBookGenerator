@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QThread>
+#include <QCloseEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -51,5 +52,6 @@ private:
     Ui::MainWindow *ui;
     WorkThread *workThread;
     QString savePath;
+    void closeEvent(QCloseEvent *event);
 };
 #endif // MAINWINDOW_H
