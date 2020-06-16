@@ -15,11 +15,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     savePath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString sp = "/";
-#if defined(Q_OS_WIN32)
-    sp = "\\";
-#elif defined (Q_OS_LINUX)
-    sp = "/";
-#endif
+//#if defined(Q_OS_WIN32)
+//    sp = "\\";
+//#elif defined (Q_OS_LINUX)
+//    sp = "/";
+//#endif
     savePath = savePath + sp + "金山词霸生词本.txt";
     ui->labelPath->setText(savePath);
 
@@ -28,7 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete workThread;
+    if (workThread != nullptr) {
+        delete workThread;
+    }
     delete ui;
 }
 
@@ -80,11 +82,11 @@ void MainWindow::onFileLoad(QString path)
 
 void MainWindow::getParentPath(QString path) {
     QString sp = "/";
-#if defined(Q_OS_WIN32)
-    sp = "\\";
-#elif defined (Q_OS_LINUX)
-    sp = "/";
-#endif
+//#if defined(Q_OS_WIN32)
+//    sp = "\\";
+//#elif defined (Q_OS_LINUX)
+//    sp = "/";
+//#endif
     QStringList p = path.split(sp);
     p.removeLast();
     QString ppath = p.join(sp);
